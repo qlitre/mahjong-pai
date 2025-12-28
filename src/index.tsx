@@ -1,5 +1,6 @@
 import { Hono } from 'hono'
 import { renderer } from './renderer'
+import { raw } from 'hono/html'
 
 const app = new Hono()
 
@@ -90,60 +91,58 @@ app.get('/', (c) => {
         </div>
       </div>
 
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            const hand = [];
-            const MAX_HAND_SIZE = 14;
-            const handContainer = document.getElementById('hand-container');
-            const handCount = document.getElementById('hand-count');
-            const resetBtn = document.getElementById('reset-btn');
-            const availableTiles = document.querySelectorAll('.available-tile');
+      {raw(`
+        <script>
+          const hand = [];
+          const MAX_HAND_SIZE = 14;
+          const handContainer = document.getElementById('hand-container');
+          const handCount = document.getElementById('hand-count');
+          const resetBtn = document.getElementById('reset-btn');
+          const availableTiles = document.querySelectorAll('.available-tile');
 
-            function updateHandDisplay() {
-              handCount.textContent = hand.length;
+          function updateHandDisplay() {
+            handCount.textContent = hand.length;
 
-              if (hand.length === 0) {
-                handContainer.innerHTML = '<p class="placeholder">下のパイをクリックして選んでください</p>';
-              } else {
-                handContainer.innerHTML = hand.map((tile, index) =>
-                  '<div class="tile hand-tile" data-index="' + index + '">' + tile.char + '</div>'
-                ).join('');
+            if (hand.length === 0) {
+              handContainer.innerHTML = '<p class="placeholder">下のパイをクリックして選んでください</p>';
+            } else {
+              handContainer.innerHTML = hand.map((tile, index) =>
+                '<div class="tile hand-tile" data-index="' + index + '">' + tile.char + '</div>'
+              ).join('');
 
-                document.querySelectorAll('.hand-tile').forEach(tile => {
-                  tile.addEventListener('click', function() {
-                    const index = parseInt(this.dataset.index);
-                    hand.splice(index, 1);
-                    updateHandDisplay();
-                  });
+              document.querySelectorAll('.hand-tile').forEach(tile => {
+                tile.addEventListener('click', function() {
+                  const index = parseInt(this.dataset.index);
+                  hand.splice(index, 1);
+                  updateHandDisplay();
                 });
-              }
-            }
-
-            availableTiles.forEach(tile => {
-              tile.addEventListener('click', function() {
-                if (hand.length >= MAX_HAND_SIZE) {
-                  alert('手牌は14枚までです！');
-                  return;
-                }
-
-                hand.push({
-                  char: this.dataset.char,
-                  name: this.dataset.name
-                });
-                updateHandDisplay();
               });
-            });
+            }
+          }
 
-            resetBtn.addEventListener('click', () => {
-              hand.length = 0;
+          availableTiles.forEach(tile => {
+            tile.addEventListener('click', function() {
+              if (hand.length >= MAX_HAND_SIZE) {
+                alert('手牌は14枚までです！');
+                return;
+              }
+
+              hand.push({
+                char: this.dataset.char,
+                name: this.dataset.name
+              });
               updateHandDisplay();
             });
+          });
 
+          resetBtn.addEventListener('click', () => {
+            hand.length = 0;
             updateHandDisplay();
-          `,
-        }}
-      />
+          });
+
+          updateHandDisplay();
+        </script>
+      `)}
     </div>
   )
 })

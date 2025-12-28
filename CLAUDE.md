@@ -2,6 +2,38 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Hono Development
+
+Use the `hono` CLI for efficient development. View all commands with `hono --help`.
+
+### Core Commands
+
+- **`hono docs [path]`** - Browse Hono documentation
+- **`hono search <query>`** - Search documentation
+- **`hono request [file]`** - Test app requests without starting a server
+
+### Quick Examples
+
+```bash
+# Search for topics
+hono search middleware
+hono search "getting started"
+
+# View documentation
+hono docs /docs/api/context
+hono docs /docs/guides/middleware
+
+# Test your app
+hono request -P /api/users src/index.ts
+hono request -P /api/users -X POST -d '{"name":"Alice"}' src/index.ts
+```
+
+### Workflow
+
+1. Search documentation: `hono search <query>`
+2. Read relevant docs: `hono docs [path]`
+3. Test implementation: `hono request [file]`
+
 ## Project Overview
 
 This is a Cloudflare Workers application built with Hono and server-side rendered JSX. The app uses Vite for development and bundling, with SSR components support via `vite-ssr-components`.
